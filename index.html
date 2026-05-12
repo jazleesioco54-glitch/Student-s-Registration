@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Portal</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial;
+}
+
+body{
+    background:#f4f4f4;
+    min-height:100vh;
+}
+
+/* Logo Header */
+.header{
+    background:#001f3f;
+    text-align:center;
+    padding:10px;
+}
+
+.header img{
+    width:90px;
+    height:90px;
+    object-fit:cover;
+    border-radius:50%;
+    border:3px solid #ffdd00;
+}
+
+/* Registration & Login Forms */
+.container{
+    width:350px;
+    background:white;
+    margin:15px auto;
+    padding:18px;
+    border-radius:10px;
+    box-shadow:0px 4px 8px rgba(0,0,0,0.2);
+}
+
+.container h2{
+    text-align:center;
+    margin-bottom:15px;
+    color:#001f3f;
+    font-size:20px;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    margin:6px 0;
+    font-size:14px;
+}
+
+label{
+    font-size:14px;
+}
+
+button{
+    width:100%;
+    padding:8px;
+    background:#001f3f;
+    color:white;
+    border:none;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#003366;
+}
+
+/* Dashboard */
+.dashboard{
+    display:none;
+    width:500px;
+    margin:15px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0px 4px 8px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.profile-card{
+    width:300px;
+    margin:auto;
+    padding:15px;
+    background:#f8f8f8;
+    border-radius:10px;
+    box-shadow:0px 2px 6px rgba(0,0,0,0.2);
+}
+
+.dashboard img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-bottom:15px;
+}
+
+.profile-info{
+    margin-top:10px;
+    text-align:left;
+}
+
+.profile-info p{
+    margin:6px 0;
+    font-size:14px;
+}
+
+/* Footer */
+.footer{
+    background:#001f3f;
+    color:#ffdd00;
+    text-align:center;
+    padding:8px;
+    font-size:13px;
+    margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<!-- Logo Header -->
+<div class="header">
+    <img src="jrmsu logo.PNG" alt="School Logo">
+</div>
+
+<!-- Registration Form -->
+<div class="container" id="registerSection">
+    <h2>Student Registration</h2>
+
+    <input type="text" id="fullname" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="course" placeholder="Course">
+
+    <label>Birthdate:</label>
+    <input type="date" id="birthdate">
+
+    <input type="number" id="age" placeholder="Age">
+
+    <input type="text" id="regUsername" placeholder="Username">
+    <input type="password" id="regPassword" placeholder="Password">
+
+    <label>Upload Profile Picture:</label>
+    <input type="file" id="photo" accept="image/*">
+
+    <button onclick="register()">Register</button>
+</div>
+
+<!-- Login Form -->
+<div class="container" id="loginSection" style="display:none;">
+    <h2>Login</h2>
+
+    <input type="text" id="loginUsername" placeholder="Username">
+    <input type="password" id="loginPassword" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+    <h2>Student Dashboard</h2>
+
+    <div class="profile-card">
+        <img id="displayPhoto">
+
+        <h3 id="displayName"></h3>
+
+        <div class="profile-info">
+            <p id="displayEmail"></p>
+            <p id="displayCourse"></p>
+            <p id="displayBirthdate"></p>
+            <p id="displayAge"></p>
+            <p id="displayUsername"></p>
+        </div>
+    </div>
+
+    <br>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    © 2026 Student Portal
+</div>
+
+<script>
+let studentData = {};
+
+function register() {
+    let fullname = document.getElementById("fullname").value;
+    let email = document.getElementById("email").value;
+    let course = document.getElementById("course").value;
+    let birthdate = document.getElementById("birthdate").value;
+    let age = document.getElementById("age").value;
+    let username = document.getElementById("regUsername").value;
+    let password = document.getElementById("regPassword").value;
+    let photo = document.getElementById("photo").files[0];
+
+    if(fullname === "" || email === "" || course === "" || birthdate === "" || age === "" || username === "" || password === "" || !photo){
+        alert("Please fill out all fields.");
+        return;
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = function(e){
+        studentData = {
+            fullname,
+            email,
+            course,
+            birthdate,
+            age,
+            username,
+            password,
+            photo: e.target.result
+        };
+
+        alert("Registration Successful! Please login.");
+
+        document.getElementById("registerSection").style.display = "none";
+        document.getElementById("loginSection").style.display = "block";
+    }
+
+    reader.readAsDataURL(photo);
+}
+
+function login() {
+    let username = document.getElementById("loginUsername").value;
+    let password = document.getElementById("loginPassword").value;
+
+    if(username === studentData.username && password === studentData.password){
+
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+
+        document.getElementById("displayPhoto").src = studentData.photo;
+        document.getElementById("displayName").innerHTML = studentData.fullname;
+        document.getElementById("displayEmail").innerHTML = "Email: " + studentData.email;
+        document.getElementById("displayCourse").innerHTML = "Course: " + studentData.course;
+        document.getElementById("displayBirthdate").innerHTML = "Birthdate: " + studentData.birthdate;
+        document.getElementById("displayAge").innerHTML = "Age: " + studentData.age;
+        document.getElementById("displayUsername").innerHTML = "Username: " + studentData.username;
+
+    } else {
+        alert("Invalid login credentials!");
+    }
+}
+
+function logout() {
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("loginSection").style.display = "block";
+}
+</script>
+
+</body>
+</html>
